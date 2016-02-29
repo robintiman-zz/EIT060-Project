@@ -8,17 +8,18 @@ import user.Patient;
 import user.User;
 
 public class Journal {
-	private String ID;
+	public final int ID;
 	private String division;
 	private User patient, doc, nurse;
 	private ArrayList<String> dataList;
 
-	public Journal(Patient patient, Doctor doc, Nurse nurse) {
+	public Journal(Patient patient, Doctor doc, Nurse nurse, int ID) {
 		this.patient = patient;
 		dataList = new ArrayList<String>();
 		this.doc = doc;
 		division = doc.getDivision();
 		this.nurse = nurse;
+		this.ID = ID;
 	}
 
 	public User getNurse() {
