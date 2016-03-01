@@ -106,9 +106,30 @@ public class server implements Runnable {
 
 				// Usage: getjournal journalId
 				case "getjournal":
-					out.println("todo");
+					if (authUser == null) {
+						out.println("Not authenticated");
+					} else {
+						try {
+							int journalId = Integer.parseInt(param1);
+							LinkedList<Journal> journals = JournalHandler.getInstance().getJournals(authUser);
+							Journal sought = null;
+							for(Journal e : journals){
+								if(e.getID() == journalId){
+									sought = e;
+									break;
+								}
+							}
+							if(sought == null){
+								out.println("The journal with that ID either does not exist or you are not authenticated to read it.");
+							}else{
+								out.println(sought.toString());
+							}
+						} catch (NumberFormatException e) {
+							out.println("The IDs can only be numbers.");
+						}
+					}
 					break;
-
+					
 				// Usage: createjournal nurseId patientId
 				case "createjournal":
 					if (authUser == null) {
