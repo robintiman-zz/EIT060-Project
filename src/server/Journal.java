@@ -37,6 +37,11 @@ public class Journal {
 	public User getPatient() {
 		return patient;
 	}
+	
+	@Override
+	public String toString() {
+		return "JournalID: " + ID + ", DoctorID: " + doc.ID + ", NurseID: " + nurse.ID + ", PatientID: " + patient.ID;
+	}
 
 	public String[] getData(User user) {
 		boolean accessRights = false;
@@ -94,4 +99,6 @@ public class Journal {
 			return false;
 		}
 	}
+	
+
 }
