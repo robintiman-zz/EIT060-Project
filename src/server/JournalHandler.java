@@ -20,6 +20,8 @@ public class JournalHandler {
 			LinkedList<Journal> journals = database.get(patient);
 			Journal journal = new Journal((Patient) patient, (Doctor) doctor, (Nurse) nurse, journals.getLast().ID + 1);
 			journals.add(journal);
+			Logger.log(
+					"Doctor " + doctor.ID + " created journal for patient " + patient.ID + " with nurse " + nurse.ID);
 			return true;
 		} else {
 			return false;
@@ -27,6 +29,7 @@ public class JournalHandler {
 	}
 
 	public boolean deleteJournal(User user, User patient, int journalID) {
+		boolean successful = false;
 		if (user.role.equals(User.GOV)) {
 			LinkedList<Journal> journals = database.get(patient);
 			Journal delete = null;
@@ -37,10 +40,13 @@ public class JournalHandler {
 				}
 			}
 			if (delete != null) {
-				return journals.remove(delete);
+				successful = journals.remove(delete);
 			}
 		}
-		return false;
+		if (successful) {
+			Logger.log("Government agent " + user.ID + " deleted journal " + journalID + " for patient " + patient.ID);
+		}
+		return successful;
 	}
 
 	public LinkedList<Journal> getJournals(User user) {

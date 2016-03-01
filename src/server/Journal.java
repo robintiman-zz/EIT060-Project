@@ -64,6 +64,8 @@ public class Journal {
 			for (int i = 0; i < dataList.size(); i++) {
 				send[i] = dataList.get(i);
 			}
+			Logger.log(
+					user.role + " " + user.ID + " fetched the data of journal " + ID + " from patient " + patient.ID);
 			return send;
 		} else {
 			return null;
@@ -75,7 +77,7 @@ public class Journal {
 		switch (user.role) {
 		case User.NURSE:
 			Nurse nurse = (Nurse) user;
-			if (nurse.ID == this.nurse.ID) 
+			if (nurse.ID == this.nurse.ID)
 				canModify = true;
 			break;
 		case User.DOCTOR:
@@ -86,6 +88,7 @@ public class Journal {
 		}
 		if (canModify) {
 			dataList.add(data);
+			Logger.log(user.role + " " + user.ID + "wrote data in journal " + ID + " for patient " + patient.ID);
 			return true;
 		} else {
 			return false;
