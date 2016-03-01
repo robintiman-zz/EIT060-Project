@@ -62,6 +62,8 @@ public class server implements Runnable {
         int port = -1;
         if (args.length >= 1) {
             port = Integer.parseInt(args[0]);
+        } else {
+        	port = 3000;
         }
         String type = "TLS";
         try {
@@ -86,8 +88,8 @@ public class server implements Runnable {
 				KeyStore ts = KeyStore.getInstance("JKS");
                 char[] password = "password".toCharArray();
 
-                ks.load(new FileInputStream("serverkeystore"), password);  // keystore password (storepass)
-                ts.load(new FileInputStream("servertruststore"), password); // truststore password (storepass)
+                ks.load(new FileInputStream("certs/serverkeystore"), password);  // keystore password (storepass)
+                ts.load(new FileInputStream("certs/servertruststore"), password); // truststore password (storepass)
                 kmf.init(ks, password); // certificate password (keypass)
                 tmf.init(ts);  // possible to use keystore as truststore here
                 ctx.init(kmf.getKeyManagers(), tmf.getTrustManagers(), null);
