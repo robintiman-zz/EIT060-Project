@@ -33,6 +33,10 @@ public class Journal {
 	public String getDivision() {
 		return division;
 	}
+	
+	public int getID(){
+		return ID;
+	}
 
 	public User getPatient() {
 		return patient;
