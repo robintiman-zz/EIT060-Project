@@ -2,3 +2,11 @@
 Doctor 1 created journal for patient 7 with nurse 4
 Doctor 1 created journal for patient 7 with nurse 4
 Doctor 1 created journal for patient 7 with nurse 4
+Doctor 1 created journal for patient 7 with nurse 4
+Doctor 1 created journal for patient 7 with nurse 4
+Doctor 1 created journal for patient 7 with nurse 5
+Doctor 1 created journal for patient 7 with nurse 4
+Doctor 1 created journal for patient 7 with nurse 4
+Doctor 1 created journal for patient 7 with nurse 4
+Doctor 1 created journal for patient 7 with nurse 5
+doctor 1 fetched the data of journal 1 from patient 7

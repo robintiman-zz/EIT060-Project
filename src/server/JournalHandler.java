@@ -79,6 +79,10 @@ public class JournalHandler {
 		
 		
 		if (!(user instanceof Gov)) {	
+			LinkedList<Journal> journals = database.get(user);
+			if (user == null || journals == null) {
+				return new LinkedList<Journal>();
+			}
 			for (Journal a : database.get(user)) {
 				send.add(a);
 			}

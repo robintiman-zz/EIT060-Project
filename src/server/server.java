@@ -25,13 +25,19 @@ import user.User;
 public class server implements Runnable {
 	private ServerSocket serverSocket = null;
 	private static int numConnectedClients = 0;
-
+	private String commands = "help                                   - displays all commands \\n" +
+							  "login <username> <password>            - logs in a user \\n" +
+							  "logout                                 - logs out a user\\n" +
+							  "createjournal <nurseId> <patientId>    - creates a journal\\n" + 
+							  "getjournal <patientId> <journalId>     - gets a journal\\n" +
+							  "listjournals                           - lists all existing jounals. (Government only)\\n" + 
+							  "deletejournal <patientId> <journalId>  - deletes a patient's journal. (Government only)\\n";
 	public server(ServerSocket ss) throws IOException {
 		serverSocket = ss;
 		newListener();
 	}
 
-	public void run() {
+	public void run() { 
 		try {
 
 			User authUser = null;
@@ -76,7 +82,8 @@ public class server implements Runnable {
 				if (split.length > 3) {
 					param3 = split[3];
 				}
-
+				
+				
 				switch (cmd) {
 				// Usage: login username password
 				case "login":
@@ -95,34 +102,43 @@ public class server implements Runnable {
 
 				// Usage: logout
 				case "logout":
-					if (authUser == null) {
-						out.println("Not logged in.");
-						break;
-					}
-
 					authUser = null;
 					out.println("Successfully logged out.");
 					break;
 
-				// Usage: getjournal journalId
+				// Usage: getjournal patientId journalId
 				case "getjournal":
 					if (authUser == null) {
 						out.println("Not authenticated");
 					} else {
 						try {
-							int journalId = Integer.parseInt(param1);
-							LinkedList<Journal> journals = JournalHandler.getInstance().getJournals(authUser);
-							Journal sought = null;
-							for(Journal e : journals){
-								if(e.getID() == journalId){
-									sought = e;
-									break;
+							int patientId = Integer.parseInt(param1);
+							int journalId = Integer.parseInt(param2);
+							User patient = Authenticator.getInstance().getUser(patientId);
+							if (patient == null) {
+								out.println("Patient not found. ");
+							} else {
+								LinkedList<Journal> journals = JournalHandler.getInstance().getJournals(patient);
+								if (journals == null) {
+									out.println("No journals found for this patient.");
+								} else {
+									Journal sought = null;
+									for(Journal e : journals) {
+										if(e.getID() == journalId){
+											sought = e;
+											break;
+										}
+									}
+									if(sought == null){
+										out.println("The journal with that ID either does not exist or you are not authenticated to read it.");
+									} else {
+										if (sought.getData(authUser) != null) {
+											out.println(sought.toString());
+										} else {
+											out.println("You are not authorized to read this journal.");
+										}
+									}
 								}
-							}
-							if(sought == null){
-								out.println("The journal with that ID either does not exist or you are not authenticated to read it.");
-							}else{
-								out.println(sought.toString());
 							}
 						} catch (NumberFormatException e) {
 							out.println("The IDs can only be numbers.");
@@ -185,6 +201,28 @@ public class server implements Runnable {
 					}
 					break;
 					
+				// Can be used by doctors and nurses
+				// Usage: write patientID journalID medicaldata
+				case "write":
+					try {
+						int patientId = Integer.parseInt(param1);
+						int journalID = Integer.parseInt(param2);
+						User patient = Authenticator.getInstance().getUser(patientId);
+						LinkedList<Journal> journs = JournalHandler.getInstance().getJournals(patient);
+						Journal journ = null;
+						for (Journal j : journs) {
+							if (journalID == j.getID()) journ = j;
+						}
+						if (journ == null) {
+							out.println("Journal could not be found");
+						} else {
+							journ.appendMedicalStuff(patient, param3);
+						}
+					} catch (NumberFormatException e) {
+						out.println("Patient and journal ID needs to be digits");
+						e.printStackTrace();
+					}
+					
 				// Can only be used by government
 				// Usage: listusers
 				case "listusers":
@@ -194,12 +232,17 @@ public class server implements Runnable {
 						out.println(Authenticator.getInstance().getUsers());
 					}
 					break;
+				case "help":
+					out.println("Available commands: \\n" + commands);
+					break;
+				default: 
+					out.println("Invalid command. Valid commands: \\n" + commands);
+					break;
 				}
-
 				out.flush();
 			}
 
-			in.close();
+			in.close(); 
 			out.close();
 			socket.close();
 			numConnectedClients--;
