@@ -26,19 +26,34 @@ import javax.security.cert.X509Certificate;
 public class client {
 
 	public static void main(String[] args) throws Exception {
+		System.out.println("Log in as: ");
+		
+		BufferedReader reader = new BufferedReader(new InputStreamReader(
+				System.in));
+		String res = reader.readLine();
+		String certPath = null;
+		
+		if (res.equals("nurse")) {
+			certPath = "nurse";
+		} else if (res.equals("doctor")) {
+			certPath = "doctor";
+		} else if (res.equals("gov") || res.equals("government")) {
+			certPath = "gov";
+		} else if (res.equals("patient")) {
+			certPath = "patient";
+		} else {
+			System.out.println("Invalid role, exiting...");
+			System.exit(0);
+		}
+		
 		String host = null;
 		String pwd = null;
 		int port = -1;
 		for (int i = 0; i < args.length; i++) {
 			System.out.println("args[" + i + "] = " + args[i]);
 		}
-		/*
-		 * if (args.length < 2) { host = "localhost"; port = 3000;
-		 * System.out.println("No args specified, using host \"" + host +
-		 * " and port " + port); //
-		 * System.out.println("USAGE: java client host port"); //
-		 * System.exit(-1); }
-		 */
+		
+		
 		try { /* get input parameters */
 			if (args.length < 3) {
 				host = "localhost";
@@ -67,10 +82,10 @@ public class client {
 				TrustManagerFactory tmf = TrustManagerFactory
 						.getInstance("SunX509");
 				SSLContext ctx = SSLContext.getInstance("TLS");
-				ks.load(new FileInputStream("certs/clientkeystore"), password); // keystore
+				ks.load(new FileInputStream("certs/" + certPath + "/clientkeystore"), password); // keystore
 																				// password
 																				// (storepass)
-				ts.load(new FileInputStream("certs/clienttruststore"), password); // truststore
+				ts.load(new FileInputStream("certs/" + certPath + "/clienttruststore"), password); // truststore
 																					// password
 																					// (storepass);
 				kmf.init(ks, password); // user password (keypass)

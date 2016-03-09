@@ -97,8 +97,14 @@ public class server implements Runnable {
 					if (user == null) {
 						out.println("Invalid username or password");
 					} else {
-						authUser = user;
-						out.println("Successfully authenticated as " + user.role + " " + user.ID);
+						
+						System.out.println("user role: " + user.role + ", subject field: " + subject);
+						if (subject.equals("CN=" + user.role) || user.role.equals(User.GOV) && subject.equals("CN=gov")) {
+							authUser = user;
+							out.println("Successfully authenticated as " + user.role + " " + user.ID);
+						} else {
+							out.println("Invalid certificate used for this user.");
+						}
 					}
 					break;
 
