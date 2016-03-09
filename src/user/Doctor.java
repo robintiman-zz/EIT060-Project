@@ -2,8 +2,8 @@ package user;
 
 public class Doctor extends Worker {
 	
-	public Doctor(int ID, String division) {
-		super(User.DOCTOR, ID, division);
+	public Doctor(String password, int ID, String division) {
+		super(password, User.DOCTOR, ID, division);
 	}
 	
 }

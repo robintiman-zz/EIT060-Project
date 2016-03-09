@@ -27,6 +27,7 @@ public class client {
 
 	public static void main(String[] args) throws Exception {
 		String host = null;
+		String pwd = null;
 		int port = -1;
 		for (int i = 0; i < args.length; i++) {
 			System.out.println("args[" + i + "] = " + args[i]);
@@ -39,14 +40,16 @@ public class client {
 		 * System.exit(-1); }
 		 */
 		try { /* get input parameters */
-			if (args.length < 2) {
+			if (args.length < 3) {
 				host = "localhost";
 				port = 3000;
+				pwd = "password";
 				System.out.println("No args specified, using host \"" + host
-						+ "\" and port " + port);
+						+ "\", port " + port + " and the default keystore password");
 			} else {
 				host = args[0];
 				port = Integer.parseInt(args[1]);
+				pwd = args[2];
 			}
 		} catch (IllegalArgumentException e) {
 			System.out.println("USAGE: java client host port");
@@ -56,7 +59,7 @@ public class client {
 		try { /* set up a key manager for client authentication */
 			SSLSocketFactory factory = null;
 			try {
-				char[] password = "password".toCharArray();
+				char[] password = pwd.toCharArray();
 				KeyStore ks = KeyStore.getInstance("JKS");
 				KeyStore ts = KeyStore.getInstance("JKS");
 				KeyManagerFactory kmf = KeyManagerFactory

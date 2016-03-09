@@ -34,10 +34,14 @@ public class Journal {
 		return division;
 	}
 
+	public int getID() {
+		return ID;
+	}
+
 	public User getPatient() {
 		return patient;
 	}
-	
+
 	@Override
 	public String toString() {
 		return "JournalID: " + ID + ", DoctorID: " + doc.ID + ", NurseID: " + nurse.ID + ", PatientID: " + patient.ID;
@@ -79,26 +83,18 @@ public class Journal {
 
 	public boolean appendMedicalStuff(User user, String data) {
 		boolean canModify = false;
-		switch (user.role) {
-		case User.NURSE:
-			Nurse nurse = (Nurse) user;
-			if (nurse.ID == this.nurse.ID)
-				canModify = true;
-			break;
-		case User.DOCTOR:
-			Doctor doc = (Doctor) user;
-			if (doc.ID == this.doc.ID)
-				canModify = true;
-			break;
+		if (user.role == User.NURSE && user.ID == nurse.ID) {
+			canModify = true;
+		} else if (user.role == User.DOCTOR && user.ID == doc.ID) {
+			canModify = true;
 		}
 		if (canModify) {
 			dataList.add(data);
-			Logger.log(user.role + " " + user.ID + "wrote data in journal " + ID + " for patient " + patient.ID);
+			Logger.log(user.role + " " + user.ID + " wrote data in journal " + ID + " for patient " + patient.ID);
 			return true;
 		} else {
 			return false;
 		}
 	}
-	
 
 }

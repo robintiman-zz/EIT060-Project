@@ -2,8 +2,8 @@ package user;
 
 public class Patient extends User {
 	
-	public Patient(int ID) {
-		super(User.PATIENT, ID);
+	public Patient(String password, int ID) {
+		super(password, User.PATIENT, ID);
 	}
 
 }

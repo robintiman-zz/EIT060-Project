@@ -2,8 +2,8 @@ package user;
 
 public class Gov extends User {
 	
-	public Gov(int ID) {
-		super(User.GOV, ID);
+	public Gov(String password, int ID) {
+		super(password, User.GOV, ID);
 	}
 
 }

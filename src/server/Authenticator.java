@@ -3,6 +3,8 @@ package server;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import org.mindrot.jbcrypt.BCrypt;
+
 import user.User;
 import user.UserFactory;
 
@@ -14,31 +16,41 @@ public class Authenticator {
 	
 	private Authenticator() {
 		
+		String hashedPw = BCrypt.hashpw("hejsan", BCrypt.gensalt());
 		// Hard coded dummy data
 		// Doctors
-		users.put("doktor1:hejsan", UserFactory.createDoctor(1, "division1"));
-		users.put("doktor2:hejsan", UserFactory.createDoctor(2, "division2"));
-		users.put("doktor3:hejsan", UserFactory.createDoctor(3, "division1"));
+		users.put("doktor1", UserFactory.createDoctor(BCrypt.hashpw("hejsan", BCrypt.gensalt()), 1, "division1"));
+		users.put("doktor2", UserFactory.createDoctor(BCrypt.hashpw("hejsan", BCrypt.gensalt()), 2, "division2"));
+		users.put("doktor3", UserFactory.createDoctor(BCrypt.hashpw("hejsan", BCrypt.gensalt()), 3, "division1"));
 		
 		// Nurses
-		users.put("nurse1:hejsan", UserFactory.createNurse(4, "division1"));
-		users.put("nurse2:hejsan", UserFactory.createNurse(5, "division2"));
-		users.put("nurse3:hejsan", UserFactory.createNurse(6, "division1"));
+		users.put("nurse1", UserFactory.createNurse(BCrypt.hashpw("hejsan", BCrypt.gensalt()), 4, "division1"));
+		users.put("nurse2", UserFactory.createNurse(BCrypt.hashpw("hejsan", BCrypt.gensalt()), 5, "division2"));
+		users.put("nurse3", UserFactory.createNurse(BCrypt.hashpw("hejsan", BCrypt.gensalt()), 6, "division1"));
 		
 		// Patients
-		users.put("patient1:hejsan", UserFactory.createPatient(7));
-		users.put("patient2:hejsan", UserFactory.createPatient(9));
-		users.put("patient3:hejsan", UserFactory.createPatient(10));
-		users.put("patient4:hejsan", UserFactory.createPatient(11));
+		users.put("patient1", UserFactory.createPatient(BCrypt.hashpw("hejsan", BCrypt.gensalt()), 7));
+		users.put("patient2", UserFactory.createPatient(BCrypt.hashpw("hejsan", BCrypt.gensalt()), 9));
+		users.put("patient3", UserFactory.createPatient(BCrypt.hashpw("hejsan", BCrypt.gensalt()), 10));
+		users.put("patient4", UserFactory.createPatient(BCrypt.hashpw("hejsan", BCrypt.gensalt()), 11));
 		
 		// Government
-		users.put("gov:hejsan", UserFactory.createGov(0));
+		users.put("gov", UserFactory.createGov(BCrypt.hashpw("hejsan", BCrypt.gensalt()), 0));
 	}
 	
 	public User authenticate(String username, String password) {
-		String key = username + ":" + password;
-		// TODO bcrypt?
-		return users.get(key);
+		User user = users.get(username);
+		
+		if (user == null) return null;
+		
+		String hash = user.getPassword();
+		
+		if (BCrypt.checkpw(password, hash)) {
+			return user;
+		} else {
+			return null;
+		}
+		
 	}
 	
 	public static Authenticator getInstance() {
@@ -61,14 +73,14 @@ public class Authenticator {
 		return null;
 	}
 	
-	public String getUsers() {
+	public String getUsers(User user) {
 		StringBuilder sb = new StringBuilder();
 		ArrayList<User> userList = new ArrayList<User>(users.values());
 		System.out.println("Number of users: " + userList.size());
 		for (User u : userList) {
-			System.out.println("s");
 			sb.append(u.role + " with ID " + u.ID + "\\n");
 		}
+		Logger.log(user.role + " with ID " + user.ID + " listed all users");
 		return sb.toString();
 	}
 }
